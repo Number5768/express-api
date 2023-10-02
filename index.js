@@ -1,14 +1,19 @@
 const express = require('express')
+const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const app = express()
-const PORT = 4000
+const cors = require('cors')
 const fs = require('fs')
+
 const db = require('./db.json')
+const PORT = 4000
 
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors({
+    origin: '*',
+}))
 
 const _path = 'book'
 app.get(`/${_path}`, (req, res) => {
