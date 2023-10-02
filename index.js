@@ -22,7 +22,7 @@ app.get(`/${_path}`, (req, res) => {
 
     const _res = search && search !== '' && search !== null ? db.filter((x) => JSON.stringify(x).toLowerCase().includes(search.toLowerCase())) : db
 
-    res.status(200).json({ status: true, code: 200, data: _res })
+    res.status(200).json({ status: true, code: 200, total: db.length, data: _res })
 })
 
 app.get(`/${_path}/:id`, (req, res) => {
