@@ -22,10 +22,10 @@ app.get(`/${_path}`, (req, res) => {
 
     const _res = search && search !== '' && search !== null ? db.filter((x) => JSON.stringify(x).toLowerCase().includes(search.toLowerCase())) : db
 
-    res.status(200).json({ status: true, code: 200, total: db.length, data: _res })
+    res.status(200).json({ status: true, code: 200, total: db.length, data: _res, category: _obj })
 })
 
-app.get(`/${_path}/:id`, (req, res) => {
+app.get(`/${_path}/findBy/:id`, (req, res) => {
 
     const { id } = req.params
 
@@ -38,6 +38,16 @@ app.get(`/${_path}/:id`, (req, res) => {
     res.status(200).json({ status: true, code: 200, data: _res })
 })
 
+app.get(`/${_path}/category`, (req, res) => {
+
+    const _obj = {}
+    if (db.length > 0 && db !== null && db !== undefined) {
+        for (const item of db) _obj[item.category] = db.filter((x) => x.category.toLowerCase() === item.category.toLowerCase()).length
+    }
+    
+    res.status(200).json({ status: true, code: 200, data: _obj })
+})
+
 app.post(`/${_path}/save`, (req, res) => {
 
     const { book_name, category, description, detail } = req.body
@@ -47,7 +57,7 @@ app.post(`/${_path}/save`, (req, res) => {
     if (description === undefined || description === null || description === '') return res.status(400).json({ status: false, code: 400, message: 'description is required' })
     if (detail === undefined || detail === null || detail === '') return res.status(400).json({ status: false, code: 400, message: 'detail is required' })
 
-    const _dataNew = { book_id: db.length + 1, book_name, category, description, detail }
+    const _dataNew = { book_id: db.length + 1, category, book_name, description, detail }
     db.push(_dataNew)
     fs.writeFileSync('./db.json', JSON.stringify(db), 'utf8')
     res.status(200).json({ status: true, code: 200, message: 'save success', data: _dataNew })
@@ -68,11 +78,12 @@ app.post(`/${_path}/update/:id`, (req, res) => {
 
     if (!_res) return res.status(404).json({ status: false, code: 404, message: 'not found' })
 
-    db.splice(db.findIndex((x) => x.book_id === Number(id)), 1, { book_id: Number(id), book_name, category, description, detail })
+    const _dataNew = { book_id: Number(id), category, book_name, description, detail }
+    db.splice(db.findIndex((x) => x.book_id === Number(id)), 1, _dataNew)
 
     fs.writeFileSync('./db.json', JSON.stringify(db), 'utf8')
 
-    res.status(200).json({ status: true, code: 200, message: 'update success' })
+    res.status(200).json({ status: true, code: 200, message: 'update success', data: _dataNew })
 })
 
 app.post(`/${_path}/delete/:id`, (req, res) => {
@@ -87,12 +98,9 @@ app.post(`/${_path}/delete/:id`, (req, res) => {
 
     db.splice(db.findIndex((x) => x.book_id === Number(id)), 1)
     fs.writeFileSync('./db.json', JSON.stringify(db), 'utf8')
-    res.status(200).json({ status: true, code: 200, message: 'delete success' })
+    res.status(200).json({ status: true, code: 200, message: 'delete success', data: _res })
 })
 
-app.get(`/${_path}/count`, (req, res) => {
-    res.status(200).json({ status: true, code: 200, data: db.length })
-})
 
 app.get('/data', async (req, res) => {
     const data = await fetch('https://jsonplaceholder.typicode.com/todos')
