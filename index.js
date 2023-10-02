@@ -20,7 +20,7 @@ app.get(`/${_path}`, (req, res) => {
 
     const { search } = req.query
 
-    const _res = search && search !== '' && search !== null ? db.filter((x) => x.category.toLowerCase().includes(search.toLowerCase() || x.book_name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()) || x.detail.toLowerCase().includes(search.toLowerCase()))) : db
+    const _res = search && search !== '' && search !== null ? db.filter((x) => JSON.stringify(x).toLowerCase().includes(search.toLowerCase())) : db
 
     res.status(200).json({ status: true, code: 200, data: _res })
 })
