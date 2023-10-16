@@ -22,7 +22,7 @@ app.get(`/${_path}`, (req, res) => {
 
     const _res = search && search !== '' && search !== null ? db.filter((x) => JSON.stringify(x).toLowerCase().includes(search.toLowerCase())) : db
 
-    res.status(200).json({ status: true, code: 200, total: db.length, data: _res, category: _obj })
+    res.status(200).json({ status: true, code: 200, total: db.length, data: _res })
 })
 
 app.get(`/${_path}/findBy/:id`, (req, res) => {
@@ -100,7 +100,6 @@ app.post(`/${_path}/delete/:id`, (req, res) => {
     fs.writeFileSync('./db.json', JSON.stringify(db), 'utf8')
     res.status(200).json({ status: true, code: 200, message: 'delete success', data: _res })
 })
-
 
 app.get('/data', async (req, res) => {
     const data = await fetch('https://jsonplaceholder.typicode.com/todos')
