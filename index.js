@@ -4,16 +4,20 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const fs = require('fs')
+const path = require('path')
 
 const db = require('./db.json')
 const PORT = 4000
 
+app.use(express.static(path.join(__dirname, 'vite-react', 'dist')))
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors({
-    origin: '*',
-}))
+app.use(cors({ origin: '*' }))
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'))
+})
 
 const _path = 'book'
 app.get(`/${_path}`, (req, res) => {
