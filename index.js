@@ -15,7 +15,7 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors({ origin: '*' }))
 
-app.get('/', (req, res) => {
+app.all('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'))
 })
 
